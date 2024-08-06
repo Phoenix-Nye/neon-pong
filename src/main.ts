@@ -92,7 +92,6 @@ document.body.addEventListener("keydown", (event: KeyboardEvent) => {
 document.body.addEventListener("keyup", (event: KeyboardEvent) => {
     keyState[event.key] = false;
 });
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //  Frame Updates
@@ -100,33 +99,42 @@ document.body.addEventListener("keyup", (event: KeyboardEvent) => {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 function updateball(ball: Ball, currentTime: number) {
+    let explosionX = 0;
+    let explosionY = 0;
+    let hitEdge = false;
     ball.previousPositions.unshift({ x: ball.positionX, y: ball.positionY });
-
+    
     if (ball.previousPositions.length > 50) {
         ball.previousPositions.pop();
     }
 
-    let hitEdge = false;
-
+    // Right side
     if (ball.positionX > canvas.clientWidth - ball.ballWidth) {
         ball.velocityX = -ball.velocityX;
         ball.positionX = canvas.clientWidth - ball.ballWidth;
         hitEdge = true;
+        explosionX = +20;
     }
+    // Left side Finished
     if (ball.positionX < 0) {
         ball.velocityX = -ball.velocityX;
         ball.positionX = 0;
         hitEdge = true;
+        explosionX = 0;
     }
+    // Floor
     if (ball.positionY > canvas.clientHeight - ball.ballHeight) {
         ball.velocityY = -ball.velocityY;
         ball.positionY = canvas.clientHeight - ball.ballHeight;
         hitEdge = true;
+        explosionY = 20;
     }
+    // Ceiling finished
     if (ball.positionY < 0) {
         ball.velocityY = -ball.velocityY;
         ball.positionY = 0;
         hitEdge = true;
+        explosionY = 0;
     }
 
     // Store the hit edge data with timestamp and tinySquares if it occurred
@@ -142,8 +150,8 @@ function updateball(ball: Ball, currentTime: number) {
             const velocityY = Math.sin(theta) * speed;
 
             tinySquares.push({
-                x: ball.positionX,
-                y: ball.positionY,
+                x: ball.positionX + explosionX,
+                y: ball.positionY + explosionY,
                 velocityX: velocityX,
                 velocityY: velocityY,
                 lifetime: 500
