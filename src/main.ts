@@ -92,6 +92,7 @@ document.body.addEventListener("keydown", (event: KeyboardEvent) => {
 document.body.addEventListener("keyup", (event: KeyboardEvent) => {
     keyState[event.key] = false;
 });
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //  Frame Updates
@@ -99,61 +100,35 @@ document.body.addEventListener("keyup", (event: KeyboardEvent) => {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 function updateball(ball: Ball, currentTime: number) {
-<<<<<<< HEAD
     ball.previousPositions.unshift({ x: ball.x, y: ball.y });
 
-=======
-    let explosionX = 0;
-    let explosionY = 0;
-    let hitEdge = false;
-    ball.previousPositions.unshift({ x: ball.positionX, y: ball.positionY });
-    
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
     if (ball.previousPositions.length > 50) {
         ball.previousPositions.pop();
     }
-
-<<<<<<< HEAD
+    
+    let explosionX = 0
+    let explosionY = 0
     let hitEdge = false;
 
     if (ball.x > canvas.clientWidth - ball.width) {
-=======
-    // Right side
-    if (ball.positionX > canvas.clientWidth - ball.ballWidth) {
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
         ball.velocityX = -ball.velocityX;
         ball.x = canvas.clientWidth - ball.width;
         hitEdge = true;
-        explosionX = +20;
+        explosionX = 20;
     }
-<<<<<<< HEAD
     if (ball.x < 0) {
-=======
-    // Left side Finished
-    if (ball.positionX < 0) {
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
         ball.velocityX = -ball.velocityX;
         ball.x = 0;
         hitEdge = true;
         explosionX = 0;
     }
-<<<<<<< HEAD
     if (ball.y > canvas.clientHeight - ball.height) {
-=======
-    // Floor
-    if (ball.positionY > canvas.clientHeight - ball.ballHeight) {
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
         ball.velocityY = -ball.velocityY;
         ball.y = canvas.clientHeight - ball.height;
         hitEdge = true;
         explosionY = 20;
     }
-<<<<<<< HEAD
     if (ball.y < 0) {
-=======
-    // Ceiling finished
-    if (ball.positionY < 0) {
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
         ball.velocityY = -ball.velocityY;
         ball.y = 0;
         hitEdge = true;
@@ -173,13 +148,8 @@ function updateball(ball: Ball, currentTime: number) {
             const velocityY = Math.sin(theta) * speed;
 
             tinySquares.push({
-<<<<<<< HEAD
-                x: ball.x,
-                y: ball.y,
-=======
-                x: ball.positionX + explosionX,
-                y: ball.positionY + explosionY,
->>>>>>> 6c7f48e900062c849d4d24e0ce3a970141874c3e
+                x: ball.x + explosionX,
+                y: ball.y + explosionY,
                 velocityX: velocityX,
                 velocityY: velocityY,
                 lifetime: 500
