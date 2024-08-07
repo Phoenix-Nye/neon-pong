@@ -20,24 +20,24 @@ type TinySquare = {
 
 //  declare type of Ball
 type Ball = {
-    positionX: number;
-    positionY: number;
+    x: number;
+    y: number;
     velocityX: number;
     velocityY: number;
-    ballWidth: number;
-    ballHeight: number;
+    width: number;
+    height: number;
     fillStyle: string;
     previousPositions: { x: number, y: number }[]; // Track past positions
     hitEdges: { x: number, y: number, time: number, tinySquares: TinySquare[] }[];
 };
 
 type Paddle = {
-    positionX: number;
-    positionY: number;
+    x: number;
+    y: number;
     velocityX: number;
     velocityY: number;
-    paddleWidth: number;
-    paddleHeight: number;
+    width: number;
+    height: number;
     fillStyle: string;
 }
 
@@ -50,12 +50,12 @@ type Paddle = {
 // new code
 let balls = [
     {
-        positionX: 100,
-        positionY: 50,
+        x: 100,
+        y: 50,
         velocityX: 6,
         velocityY: 2,
-        ballWidth: 20,
-        ballHeight: 20,
+        width: 20,
+        height: 20,
         fillStyle: "rgba(0, 255, 210, 1)",
         previousPositions: [{ x: 100, y: 50 }], // Initial position
         hitEdges: []
@@ -64,21 +64,21 @@ let balls = [
 // Paddle array
 let paddleArray: Paddle[] = [
     {
-        positionX: 50,
-        positionY: canvas.height / 2 - 50,
+        x: 50,
+        y: canvas.height / 2 - 50,
         velocityX: 0,
         velocityY: 5,
-        paddleWidth: 20,
-        paddleHeight: 30,
+        width: 20,
+        height: 30,
         fillStyle: "crimson"
     },
     {
-        positionX: 330,
-        positionY: canvas.height / 2 - 50,
+        x: 330,
+        y: canvas.height / 2 - 50,
         velocityX: 0,
         velocityY: 5,
-        paddleWidth: 20,
-        paddleHeight: 30,
+        width: 20,
+        height: 30,
         fillStyle: "crimson"
     }
 ];
@@ -100,7 +100,7 @@ document.body.addEventListener("keyup", (event: KeyboardEvent) => {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 function updateball(ball: Ball, currentTime: number) {
-    ball.previousPositions.unshift({ x: ball.positionX, y: ball.positionY });
+    ball.previousPositions.unshift({ x: ball.x, y: ball.y });
 
     if (ball.previousPositions.length > 50) {
         ball.previousPositions.pop();
@@ -108,24 +108,24 @@ function updateball(ball: Ball, currentTime: number) {
 
     let hitEdge = false;
 
-    if (ball.positionX > canvas.clientWidth - ball.ballWidth) {
+    if (ball.x > canvas.clientWidth - ball.width) {
         ball.velocityX = -ball.velocityX;
-        ball.positionX = canvas.clientWidth - ball.ballWidth;
+        ball.x = canvas.clientWidth - ball.width;
         hitEdge = true;
     }
-    if (ball.positionX < 0) {
+    if (ball.x < 0) {
         ball.velocityX = -ball.velocityX;
-        ball.positionX = 0;
+        ball.x = 0;
         hitEdge = true;
     }
-    if (ball.positionY > canvas.clientHeight - ball.ballHeight) {
+    if (ball.y > canvas.clientHeight - ball.height) {
         ball.velocityY = -ball.velocityY;
-        ball.positionY = canvas.clientHeight - ball.ballHeight;
+        ball.y = canvas.clientHeight - ball.height;
         hitEdge = true;
     }
-    if (ball.positionY < 0) {
+    if (ball.y < 0) {
         ball.velocityY = -ball.velocityY;
-        ball.positionY = 0;
+        ball.y = 0;
         hitEdge = true;
     }
 
@@ -142,22 +142,22 @@ function updateball(ball: Ball, currentTime: number) {
             const velocityY = Math.sin(theta) * speed;
 
             tinySquares.push({
-                x: ball.positionX,
-                y: ball.positionY,
+                x: ball.x,
+                y: ball.y,
                 velocityX: velocityX,
                 velocityY: velocityY,
                 lifetime: 500
             });
         }
 
-        ball.hitEdges.unshift({ x: ball.positionX, y: ball.positionY, time: currentTime, tinySquares });
+        ball.hitEdges.unshift({ x: ball.x, y: ball.y, time: currentTime, tinySquares });
 
         const cutoffTime = currentTime - 5000;
         ball.hitEdges = ball.hitEdges.filter(edge => edge.time > cutoffTime);
     }
 
-    ball.positionX += ball.velocityX;
-    ball.positionY += ball.velocityY;
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
 }
 function drawball(ball: Ball) {
     // Draw the trail
@@ -165,9 +165,9 @@ function drawball(ball: Ball) {
         const alpha = 0.8 - i / ball.previousPositions.length; // Fade effect
         c.fillStyle = `rgba(0, 255, 210, ${alpha})`; // Red with decreasing opacity
         const pos = ball.previousPositions[i];
-        const width = alpha * ball.ballWidth / 2;
-        const height = alpha * ball.ballHeight / 2;
-        c.fillRect(pos.x + (ball.ballWidth - width) / 2, pos.y + (ball.ballHeight - height) / 2, width, height);
+        const width = alpha * ball.width / 2;
+        const height = alpha * ball.height / 2;
+        c.fillRect(pos.x + (ball.width - width) / 2, pos.y + (ball.height - height) / 2, width, height);
     }
 
     // Draw the hit edge effects
@@ -188,29 +188,29 @@ function drawball(ball: Ball) {
 
     // Draw the current ball
     c.fillStyle = ball.fillStyle;
-    c.fillRect(ball.positionX, ball.positionY, ball.ballWidth, ball.ballHeight);
+    c.fillRect(ball.x, ball.y, ball.width, ball.height);
 }
 function drawPaddle(paddle: Paddle) {
     c.fillStyle = paddle.fillStyle;
-    c.fillRect(paddle.positionX, paddle.positionY, paddle.paddleWidth, paddle.paddleHeight);
+    c.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
 function detectPaddleColission(paddle: Paddle, ball: Ball) {
     return !(
-        paddle.positionX + paddle.paddleWidth < ball.positionX ||
-        paddle.positionX > ball.positionX + ball.ballWidth ||
-        paddle.positionY + paddle.paddleHeight < ball.positionY ||
-        paddle.positionY > ball.positionY + ball.ballHeight
+        paddle.x + paddle.width < ball.x ||
+        paddle.x > ball.x + ball.width ||
+        paddle.y + paddle.height < ball.y ||
+        paddle.y > ball.y + ball.height
     );
 }
 
 function handleCollision(paddle: Paddle, ball: Ball) {
     if (detectPaddleColission(paddle, ball)) {
         // Determine collision side
-        const ballCenterX = ball.positionX + ball.ballWidth / 2;
-        const ballCenterY = ball.positionY + ball.ballHeight / 2;
-        const paddleCenterX = paddle.positionX + paddle.paddleWidth / 2;
-        const paddleCenterY = paddle.positionY + paddle.paddleHeight / 2;
+        const ballCenterX = ball.x + ball.width / 2;
+        const ballCenterY = ball.y + ball.height / 2;
+        const paddleCenterX = paddle.x + paddle.width / 2;
+        const paddleCenterY = paddle.y + paddle.height / 2;
 
         const dx = ballCenterX - paddleCenterX;
         const dy = ballCenterY - paddleCenterY;
@@ -218,17 +218,17 @@ function handleCollision(paddle: Paddle, ball: Ball) {
         if (Math.abs(dx) > Math.abs(dy)) {
             // Collision on the sides of the paddle
             if (dx > 0) {
-                ball.positionX = paddle.positionX + paddle.paddleWidth;
+                ball.x = paddle.x + paddle.width;
             } else {
-                ball.positionX = paddle.positionX - ball.ballWidth;
+                ball.x = paddle.x - ball.width;
             }
             ball.velocityX = -ball.velocityX; // Reverse X velocity
         } else {
             // Collision on the top or bottom of the paddle
             if (dy > 0) {
-                ball.positionY = paddle.positionY + paddle.paddleHeight;
+                ball.y = paddle.y + paddle.height;
             } else {
-                ball.positionY = paddle.positionY - ball.ballHeight;
+                ball.y = paddle.y - ball.height;
             }
             ball.velocityY = -ball.velocityY; // Reverse Y velocity
         }
@@ -237,36 +237,36 @@ function handleCollision(paddle: Paddle, ball: Ball) {
 
 function updatePaddles() {
     if (keyState["w"]) {
-        paddleArray[0].positionY -= paddleArray[0].velocityY;
+        paddleArray[0].y -= paddleArray[0].velocityY;
     }
     if (keyState["s"]) {
-        paddleArray[0].positionY += paddleArray[0].velocityY;
+        paddleArray[0].y += paddleArray[0].velocityY;
     }
     if (keyState["a"]) {
-        paddleArray[0].positionX -= paddleArray[0].velocityX;
+        paddleArray[0].x -= paddleArray[0].velocityX;
     }
     if (keyState["d"]) {
-        paddleArray[0].positionX += paddleArray[0].velocityX;
+        paddleArray[0].x += paddleArray[0].velocityX;
     }
     // Example for second paddle (assuming keys 'i', 'k', 'j', 'l' are used):
     if (keyState["5"]) {
-        paddleArray[1].positionY -= paddleArray[1].velocityY;
+        paddleArray[1].y -= paddleArray[1].velocityY;
     }
     if (keyState["2"]) {
-        paddleArray[1].positionY += paddleArray[1].velocityY;
+        paddleArray[1].y += paddleArray[1].velocityY;
     }
     if (keyState["1"]) {
-        paddleArray[1].positionX -= paddleArray[1].velocityX;
+        paddleArray[1].x -= paddleArray[1].velocityX;
     }
     if (keyState["3"]) {
-        paddleArray[1].positionX += paddleArray[1].velocityX;
+        paddleArray[1].x += paddleArray[1].velocityX;
     }
     for (let paddle of paddleArray) {
-        if (paddle.positionY > canvas.clientHeight - paddle.paddleHeight) {
-            paddle.positionY = canvas.clientHeight - paddle.paddleHeight;
+        if (paddle.y > canvas.clientHeight - paddle.height) {
+            paddle.y = canvas.clientHeight - paddle.height;
         }
-        if (paddle.positionY < 0) {
-            paddle.positionY = 0;
+        if (paddle.y < 0) {
+            paddle.y = 0;
         }
     }
 
