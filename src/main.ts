@@ -99,46 +99,43 @@ document.body.addEventListener("keyup", (event: KeyboardEvent) => {
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-function updateball(ball: Ball, currentTime: number) {
+function updateBall(ball: Ball, currentTime: number) {
     ball.previousPositions.unshift({ x: ball.x, y: ball.y });
 
     if (ball.previousPositions.length > 50) {
         ball.previousPositions.pop();
     }
     
-    let explosionX = 0
-    let explosionY = 0
     let hitEdge = false;
 
     if (ball.x > canvas.clientWidth - ball.width) {
         ball.velocityX = -ball.velocityX;
         ball.x = canvas.clientWidth - ball.width;
         hitEdge = true;
-        explosionX = 20;
     }
     if (ball.x < 0) {
         ball.velocityX = -ball.velocityX;
         ball.x = 0;
         hitEdge = true;
-        explosionX = 0;
     }
     if (ball.y > canvas.clientHeight - ball.height) {
         ball.velocityY = -ball.velocityY;
         ball.y = canvas.clientHeight - ball.height;
         hitEdge = true;
-        explosionY = 20;
     }
     if (ball.y < 0) {
         ball.velocityY = -ball.velocityY;
         ball.y = 0;
         hitEdge = true;
-        explosionY = 0;
     }
 
     // Store the hit edge data with timestamp and tinySquares if it occurred
     if (hitEdge) {
         const tinySquares: TinySquare[] = [];
-        for (let i = 0; i < 5000; i++) {
+        const explosionCenterX = ball.x + ball.width / 2;
+        const explosionCenterY = ball.y + ball.height / 2;
+
+        for (let i = 0; i < 2000; i++) {
             // Generates a random direction in radians
             const theta = Math.random() * 2 * Math.PI;
 
@@ -147,9 +144,16 @@ function updateball(ball: Ball, currentTime: number) {
             const velocityX = Math.cos(theta) * speed;
             const velocityY = Math.sin(theta) * speed;
 
+            // Distance from the center of the explosion
+            const distance = Math.random() * ball.width;
+
+            // Calculate the position of the tiny square
+            const tinySquareX = explosionCenterX + Math.cos(theta) * distance;
+            const tinySquareY = explosionCenterY + Math.sin(theta) * distance;
+
             tinySquares.push({
-                x: ball.x + explosionX,
-                y: ball.y + explosionY,
+                x: tinySquareX,
+                y: tinySquareY,
                 velocityX: velocityX,
                 velocityY: velocityY,
                 lifetime: 500
@@ -165,6 +169,9 @@ function updateball(ball: Ball, currentTime: number) {
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
 }
+
+
+
 function drawball(ball: Ball) {
     // Draw the trail
     for (let i = 0; i < ball.previousPositions.length; i++) {
@@ -289,7 +296,7 @@ function frame() {
 
                                                  // Update and draw balls
     for (let ball of balls) {
-        updateball(ball, currentTime);
+        updateBall(ball, currentTime);
         drawball(ball);
     }
 
