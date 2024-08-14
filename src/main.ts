@@ -2,6 +2,7 @@
 const canvas = document.getElementById("mainCanvas") as HTMLCanvasElement; // eldtrich typescript as expression
 const c = canvas.getContext("2d")!;
 
+
 canvas.style.backgroundColor = "black"; // Change this to the desired color
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +84,9 @@ let paddleArray: Paddle[] = [
     }
 ];
 
+let leftscore = 0;
+let rightscore = 0;
+
 const keyState: { [key: string]: boolean } = {}; ``
 
 document.body.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -92,7 +96,6 @@ document.body.addEventListener("keydown", (event: KeyboardEvent) => {
 document.body.addEventListener("keyup", (event: KeyboardEvent) => {
     keyState[event.key] = false;
 });
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //  Frame Updates
@@ -112,11 +115,13 @@ function updateBall(ball: Ball, currentTime: number) {
         ball.velocityX = -ball.velocityX;
         ball.x = canvas.clientWidth - ball.width;
         hitEdge = true;
+        leftscore += 1;
     }
     if (ball.x < 0) {
         ball.velocityX = -ball.velocityX;
         ball.x = 0;
         hitEdge = true;
+        rightscore += 1;
     }
     if (ball.y > canvas.clientHeight - ball.height) {
         ball.velocityY = -ball.velocityY;
@@ -169,9 +174,6 @@ function updateBall(ball: Ball, currentTime: number) {
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
 }
-
-
-
 function drawball(ball: Ball) {
     // Draw the trail
     for (let i = 0; i < ball.previousPositions.length; i++) {
@@ -311,6 +313,17 @@ function frame() {
             handleCollision(paddle, ball);
         }
     }
+function drawscore() {
+    c.font = '30px Arial';
+c.fillStyle = 'rgba(77,77,255)';
+c.textAlign = 'center';
+c.textBaseline = 'middle';
+
+c.fillText(leftscore + '     ' + rightscore, canvas.width / 2, canvas.height / 10);
+
+}
+drawscore();
+
 
     // Request a new frame
     requestAnimationFrame(frame);
