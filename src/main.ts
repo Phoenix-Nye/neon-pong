@@ -53,8 +53,8 @@ let balls = [
     {
         x: 100,
         y: 50,
-        velocityX: 6,
-        velocityY: 2,
+        velocityX: 1.5,
+        velocityY: 1.2,
         width: 20,
         height: 20,
         fillStyle: "rgba(0, 255, 210, 1)",
@@ -116,12 +116,14 @@ function updateBall(ball: Ball, currentTime: number) {
         ball.x = canvas.clientWidth - ball.width;
         hitEdge = true;
         leftscore += 1;
+        resetBoard();
     }
     if (ball.x < 0) {
         ball.velocityX = -ball.velocityX;
         ball.x = 0;
         hitEdge = true;
         rightscore += 1;
+        resetBoard();
     }
     if (ball.y > canvas.clientHeight - ball.height) {
         ball.velocityY = -ball.velocityY;
@@ -287,6 +289,23 @@ function updatePaddles() {
 
 }
 
+function resetBoard() {
+    // Reset ball to the center of the canvas
+    const ball = balls[0];
+    ball.x = canvas.width / 2 - ball.width / 2;
+    ball.y = canvas.height / 2 - ball.height / 2;
+
+    // Reset the ball's velocity
+    ball.velocityX = Math.random() < .5 ? -1.5 : 1.5;
+    ball.velocityY = 1;
+
+    // Reset paddles to their initial positions
+    paddleArray[0].y = canvas.height / 2 - paddleArray[0].height / 2;
+    paddleArray[1].y = canvas.height / 2 - paddleArray[1].height / 2;
+
+    // Pause for a moment before resuming the game
+}
+
 function frame() {
     const currentTime = Date.now(); // Get the current timestamp
 
@@ -317,10 +336,8 @@ function drawscore() {
     c.font = '30px Arial';
 c.fillStyle = 'rgba(77,77,255)';
 c.textAlign = 'center';
-c.textBaseline = 'middle';
-
+c.textBaseline = 'middle';  
 c.fillText(leftscore + '     ' + rightscore, canvas.width / 2, canvas.height / 10);
-
 }
 drawscore();
 
