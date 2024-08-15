@@ -53,8 +53,8 @@ let balls = [
     {
         x: 100,
         y: 50,
-        velocityX: 1.5,
-        velocityY: 1.2,
+        velocityX: 2,
+        velocityY: 1.75,
         width: 20,
         height: 20,
         fillStyle: "rgba(0, 255, 210, 1)",
@@ -68,7 +68,7 @@ let paddleArray: Paddle[] = [
         x: 50,
         y: canvas.height / 2 - 50,
         velocityX: 0,
-        velocityY: 5,
+        velocityY: 3,
         width: 20,
         height: 30,
         fillStyle: "crimson"
@@ -77,7 +77,7 @@ let paddleArray: Paddle[] = [
         x: 330,
         y: canvas.height / 2 - 50,
         velocityX: 0,
-        velocityY: 5,
+        velocityY: 3,
         width: 20,
         height: 30,
         fillStyle: "crimson"
@@ -236,18 +236,25 @@ function handleCollision(paddle: Paddle, ball: Ball) {
             // Collision on the sides of the paddle
             if (dx > 0) {
                 ball.x = paddle.x + paddle.width;
+
             } else {
                 ball.x = paddle.x - ball.width;
+
             }
             ball.velocityX = -ball.velocityX; // Reverse X velocity
+            ball.velocityX += Math.sign(ball.velocityX) * 0.2;
+            ball.velocityY += Math.sign(ball.velocityY) * 0.1;
         } else {
             // Collision on the top or bottom of the paddle
             if (dy > 0) {
                 ball.y = paddle.y + paddle.height;
+
             } else {
                 ball.y = paddle.y - ball.height;
+
             }
             ball.velocityY = -ball.velocityY; // Reverse Y velocity
+
         }
     }
 }
@@ -296,8 +303,8 @@ function resetBoard() {
     ball.y = canvas.height / 2 - ball.height / 2;
 
     // Reset the ball's velocity
-    ball.velocityX = Math.random() < .5 ? -1.5 : 1.5;
-    ball.velocityY = 1;
+    ball.velocityX = 2;
+    ball.velocityY = 1.75;
 
     // Reset paddles to their initial positions
     paddleArray[0].y = canvas.height / 2 - paddleArray[0].height / 2;
