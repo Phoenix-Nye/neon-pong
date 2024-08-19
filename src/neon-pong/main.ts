@@ -83,7 +83,7 @@ let paddleArray: Paddle[] = [
         fillStyle: "crimson"
     }
 ];
-
+let gameover = false;
 let leftscore = 0;
 let rightscore = 0;
 
@@ -108,7 +108,7 @@ function updateBall(ball: Ball, currentTime: number) {
     if (ball.previousPositions.length > 50) {
         ball.previousPositions.pop();
     }
-    
+
     let hitEdge = false;
 
     if (ball.x > canvas.clientWidth - ball.width) {
@@ -303,14 +303,31 @@ function resetBoard() {
     ball.y = canvas.height / 2 - ball.height / 2;
 
     // Reset the ball's velocity
-    ball.velocityX = 2;
+    ball.velocityX = Math.random() < .5 ? -2 : 2;
     ball.velocityY = 1.75;
 
     // Reset paddles to their initial positions
     paddleArray[0].y = canvas.height / 2 - paddleArray[0].height / 2;
     paddleArray[1].y = canvas.height / 2 - paddleArray[1].height / 2;
 
-    // Pause for a moment before resuming the game
+    if (leftscore > 5) {
+        c.font = '30px Arial';
+        c.fillStyle = 'rgba(77,77,255)';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText('Player 1 wins', canvas.width / 2, canvas.height / 10);
+        leftscore = 0;
+        rightscore = 0;
+    }
+    if (rightscore > 5) {
+        c.font = '30px Arial';
+        c.fillStyle = 'rgba(77,77,255)';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText('Player 2 wins', canvas.width / 2, canvas.height / 10);
+        leftscore = 0;
+        rightscore = 0;
+    }
 }
 
 function frame() {
@@ -322,7 +339,7 @@ function frame() {
     // Update paddles based on key states
     updatePaddles();
 
-                                                 // Update and draw balls
+    // Update and draw balls
     for (let ball of balls) {
         updateBall(ball, currentTime);
         drawball(ball);
@@ -339,14 +356,14 @@ function frame() {
             handleCollision(paddle, ball);
         }
     }
-function drawscore() {
-    c.font = '30px Arial';
-c.fillStyle = 'rgba(77,77,255)';
-c.textAlign = 'center';
-c.textBaseline = 'middle';  
-c.fillText(leftscore + '     ' + rightscore, canvas.width / 2, canvas.height / 10);
-}
-drawscore();
+    function drawscore() {
+        c.font = '30px Arial';
+        c.fillStyle = 'rgba(77,77,255)';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText(leftscore + '     ' + rightscore, canvas.width / 2, canvas.height / 10);
+    }
+    drawscore();
 
 
     // Request a new frame
